@@ -1,0 +1,24 @@
+# ==============================================================================
+# prometheus/prometheus.yml: Cấu hình thu thập metrics
+# Khớp với Báo cáo Hệ thống Quản lý công việc cá nhân/nhóm Task Tracker
+# ==============================================================================
+
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  # 1. Thu thập metrics từ chính máy chủ Prometheus
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # 2. Thu thập metrics tài nguyên container từ cAdvisor
+  - job_name: cadvisor
+    static_configs:
+      - targets: ["cadvisor:8080"]
+
+  # 3. Thu thập metrics ứng dụng từ backend Node.js (prom-client)
+  - job_name: task_tracker_backend
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["backend:3000"]

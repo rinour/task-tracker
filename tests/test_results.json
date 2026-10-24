@@ -1,0 +1,154 @@
+[
+  {
+    "code": "TC01",
+    "name": "Đăng nhập hợp lệ",
+    "expected": "200 OK, cấp JWT token và thông tin người dùng",
+    "actual": "HTTP 200, user: admin@tasktracker.local",
+    "status": "ĐẠT (PASS)",
+    "passed": true
+  },
+  {
+    "code": "TC02",
+    "name": "Đăng nhập sai mật khẩu",
+    "expected": "HTTP 401 Unauthorized, từ chối cấp token",
+    "actual": "HTTP 401: Email hoặc mật khẩu không chính xác",
+    "status": "ĐẠT (PASS)",
+    "passed": true
+  },
+  {
+    "code": "TC03",
+    "name": "Truy cập API khi chưa đăng nhập",
+    "expected": "HTTP 401 Unauthorized",
+    "actual": "HTTP 401: Yêu cầu đăng nhập để truy cập tài nguyên này",
+    "status": "ĐẠT (PASS)",
+    "passed": true
+  },
+  {
+    "code": "TC04",
+    "name": "Tạo công việc",
+    "expected": "HTTP 201 Created, trả về công việc mới có ID",
+    "actual": "HTTP 201, ID: 6",
+    "status": "ĐẠT (PASS)",
+    "passed": 6
+  },
+  {
+    "code": "TC05",
+    "name": "Tạo công việc thiếu tiêu đề",
+    "expected": "HTTP 400 Bad Request, từ chối ghi CSDL",
+    "actual": "HTTP 400: Tiêu đề công việc không được để trống",
+    "status": "ĐẠT (PASS)",
+    "passed": true
+  },
+  {
+    "code": "TC06",
+    "name": "Sửa công việc",
+    "expected": "HTTP 200 OK, dữ liệu cập nhật và updated_at mới",
+    "actual": "HTTP 200, progress: 30%, updated_at: 2026-10-24T08:49:02.379Z",
+    "status": "ĐẠT (PASS)",
+    "passed": true
+  },
+  {
+    "code": "TC07",
+    "name": "Cập nhật trạng thái sang Done",
+    "expected": "status=done, completed_at khác rỗng, progress=100",
+    "actual": "status: done, completed_at: 2026-10-24T08:49:02.380Z, progress: 100",
+    "status": "ĐẠT (PASS)",
+    "passed": true
+  },
+  {
+    "code": "TC08",
+    "name": "Mở lại công việc",
+    "expected": "status=in_progress, completed_at được xóa thành NULL",
+    "actual": "status: in_progress, completed_at: null",
+    "status": "ĐẠT (PASS)",
+    "passed": true
+  },
+  {
+    "code": "TC09",
+    "name": "Trạng thái không hợp lệ",
+    "expected": "HTTP 400 Bad Request, dữ liệu không đổi",
+    "actual": "HTTP 400: Trạng thái không hợp lệ",
+    "status": "ĐẠT (PASS)",
+    "passed": true
+  },
+  {
+    "code": "TC10",
+    "name": "Deadline định dạng sai",
+    "expected": "HTTP 400 Bad Request",
+    "actual": "HTTP 400: Thời hạn hoàn thành không hợp lệ",
+    "status": "ĐẠT (PASS)",
+    "passed": true
+  },
+  {
+    "code": "TC11",
+    "name": "Hiển thị công việc quá hạn",
+    "expected": "Danh sách công việc có deadline < now() và status <> done",
+    "actual": "HTTP 200, tìm thấy 1 việc quá hạn",
+    "status": "ĐẠT (PASS)",
+    "passed": true
+  },
+  {
+    "code": "TC12",
+    "name": "Phân quyền công việc người khác",
+    "expected": "Từ chối truy cập (404/403), không lộ thông tin cá nhân",
+    "actual": "HTTP 404: Không tìm thấy công việc",
+    "status": "ĐẠT (PASS)",
+    "passed": true
+  },
+  {
+    "code": "TC13",
+    "name": "Xóa công việc",
+    "expected": "HTTP 200 OK, công việc bị xóa hoàn toàn",
+    "actual": "HTTP 200, kiểm tra lại: HTTP 404",
+    "status": "ĐẠT (PASS)",
+    "passed": true
+  },
+  {
+    "code": "TC14",
+    "name": "Lưu dữ liệu vào PostgreSQL",
+    "expected": "Bản ghi tồn tại với đầy đủ các trường và liên kết bảng",
+    "actual": "Tìm thấy task #1: \"Kiểm toán bảo mật cấu hình Nginx và TLS\"",
+    "status": "ĐẠT (PASS)",
+    "passed": "Kiểm toán bảo mật cấu hình Nginx và TLS"
+  },
+  {
+    "code": "TC15",
+    "name": "Reverse proxy và HTTPS",
+    "expected": "Chuyển hướng 301 HTTP->HTTPS, cấu hình SSL TLS 1.2/1.3",
+    "actual": "Cấu hình Nginx: redirect 301: true, SSL 443: true, Proxy: true",
+    "status": "ĐẠT (PASS)",
+    "passed": true
+  },
+  {
+    "code": "TC16",
+    "name": "Không công khai cổng CSDL nội bộ",
+    "expected": "PostgreSQL chỉ chạy trong app_net, không ánh xạ ports ra host",
+    "actual": "Cổng 5432 bị cô lập nội bộ: true",
+    "status": "ĐẠT (PASS)",
+    "passed": true
+  },
+  {
+    "code": "TC17",
+    "name": "Không công khai /metrics ra ngoài",
+    "expected": "Nginx chặn đường dẫn /metrics với HTTP 404",
+    "actual": "Nginx chặn /metrics: true",
+    "status": "ĐẠT (PASS)",
+    "passed": true
+  },
+  {
+    "code": "TC18",
+    "name": "Giám sát metrics Prometheus",
+    "expected": "HTTP 200, trả về dữ liệu chuẩn Prometheus (prom-client)",
+    "actual": "Định dạng prometheus: Đúng chuẩn",
+    "status": "ĐẠT (PASS)",
+    "passed": true
+  },
+  {
+    "code": "TC19",
+    "name": "Truy vấn nhật ký có cấu trúc",
+    "expected": "Định dạng JSON có timestamp, level, status, che mật khẩu",
+    "actual": "Cấu trúc log chuẩn JSON cho Alloy/Loki: true",
+    "status": "ĐẠT (PASS)",
+    "passed": true
+  }
+]

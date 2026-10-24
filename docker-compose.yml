@@ -1,0 +1,192 @@
+# ==============================================================================
+# docker-compose.yml: Triển khai toàn bộ Hệ thống Task Tracker
+# Khớp 100% với Báo cáo Triển khai và Quản trị Hệ thống phần mềm
+# ==============================================================================
+
+name: task-tracker
+
+services:
+  # 1. Reverse Proxy & Phục vụ Frontend
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: task_tracker_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./frontend:/usr/share/nginx/html:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - app_net
+    security_opt:
+      - "no-new-privileges:true"
+    restart: unless-stopped
+
+  # 2. REST API Backend (Node.js/Express)
+  backend:
+    build: ./backend
+    container_name: task_tracker_backend
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${POSTGRES_DB:-task_tracker}
+      DB_USER: ${APP_DB_USER:-task_app}
+      DB_PASSWORD: ${APP_DB_PASSWORD:-TaskAppSecret2026!}
+      JWT_SECRET: ${JWT_SECRET:-TaskTrackerSecretKey2026SuperSecure!}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app_net
+      - mon_net
+    read_only: true
+    tmpfs:
+      - "/tmp"
+    security_opt:
+      - "no-new-privileges:true"
+    restart: unless-stopped
+
+  # 3. Cơ sở dữ liệu quan hệ PostgreSQL
+  postgres:
+    image: postgres:16-alpine
+    container_name: task_tracker_postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-task_tracker}
+      POSTGRES_USER: ${POSTGRES_USER:-task_owner}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-TaskOwnerPassword2026!}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-task_owner} -d ${POSTGRES_DB:-task_tracker}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app_net
+    security_opt:
+      - "no-new-privileges:true"
+    restart: unless-stopped
+
+  # 4. Quản trị PostgreSQL qua Web bằng pgAdmin
+  pgadmin:
+    image: dpage/pgadmin4:8.12
+    container_name: task_tracker_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@tasktracker.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-PgAdminSecret2026!}
+    ports:
+      - "127.0.0.1:5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - app_net
+    restart: unless-stopped
+
+  # 5. Giám sát số liệu chuỗi thời gian Prometheus
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    container_name: task_tracker_prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=15d
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prom_data:/prometheus
+    ports:
+      - "127.0.0.1:9090:9090"
+    depends_on:
+      - cadvisor
+      - backend
+    networks:
+      - mon_net
+    restart: unless-stopped
+
+  # 6. Thu thập metrics tài nguyên container cAdvisor
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    container_name: task_tracker_cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - mon_net
+    restart: unless-stopped
+
+  # 7. Trực quan hóa số liệu & Explore Grafana
+  grafana:
+    image: grafana/grafana:11.2.0
+    container_name: task_tracker_grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-GrafanaAdminSecret2026!}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+    ports:
+      - "127.0.0.1:3001:3000"
+    depends_on:
+      - prometheus
+      - loki
+    networks:
+      - mon_net
+    restart: unless-stopped
+
+  # 8. Lưu trữ & Truy vấn nhật ký Loki
+  loki:
+    image: grafana/loki:3.1.0
+    container_name: task_tracker_loki
+    command:
+      - -config.file=/etc/loki/loki-config.yml
+    volumes:
+      - ./loki/loki-config.yml:/etc/loki/loki-config.yml:ro
+      - loki_data:/loki
+    networks:
+      - mon_net
+    restart: unless-stopped
+
+  # 9. Thu thập log container Grafana Alloy
+  alloy:
+    image: grafana/alloy:v1.4.2
+    container_name: task_tracker_alloy
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:12345
+      - --storage.path=/var/lib/alloy/data
+      - /etc/alloy/config.alloy
+    volumes:
+      - ./alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - loki
+    networks:
+      - mon_net
+    restart: unless-stopped
+
+networks:
+  app_net:
+    driver: bridge
+  mon_net:
+    driver: bridge
+
+volumes:
+  pg_data:
+  pgadmin_data:
+  prom_data:
+  grafana_data:
+  loki_data:

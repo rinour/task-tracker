@@ -1,0 +1,23 @@
+# Environment variables
+.env
+.env.local
+
+# Dependencies
+node_modules/
+
+# Certificates and keys
+nginx/certs/*.key
+nginx/certs/*.crt
+
+# Logs and runtime data
+*.log
+*.dump
+data/
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Temp files
+BAO_CAO_CONTENT.txt
+word/
