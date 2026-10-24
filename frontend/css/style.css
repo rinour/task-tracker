@@ -977,36 +977,207 @@ textarea.form-control {
   margin-bottom: 1rem;
 }
 
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-  .kanban-board {
-    grid-template-columns: 1fr;
+/* Sidebar mobile drawer overlay & close button */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 45;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.sidebar-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.mobile-sidebar-close {
+  display: none;
+}
+
+/* ==============================================================================
+   RESPONSIVE DESIGN SYSTEM (Tất cả Viewport: 320px đến 1920px)
+   ============================================================================== */
+
+/* Màn hình siêu rộng (1920px và lớn hơn) */
+@media (min-width: 1920px) {
+  .page-container {
+    max-width: 1720px;
+    margin: 0 auto;
+    width: 100%;
   }
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Màn hình Desktop tiêu chuẩn (1440px) */
+@media (min-width: 1280px) and (max-width: 1440px) {
+  .page-container {
+    max-width: 1380px;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+/* Tablet ngang & Laptop nhỏ (1024px) */
+@media (max-width: 1024px) {
   .sidebar {
     transform: translateX(-100%);
+    z-index: 50;
+    box-shadow: var(--shadow-xl);
   }
   .sidebar.open {
     transform: translateX(0);
   }
+  .mobile-sidebar-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .main-wrapper {
     margin-left: 0;
+    width: 100%;
   }
   .mobile-menu-btn {
     display: block;
   }
+  .kanban-board {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    scroll-snap-type: x mandatory;
+    gap: 1rem;
+    -webkit-overflow-scrolling: touch;
+  }
+  .kanban-col {
+    min-width: 280px;
+    max-width: 340px;
+    flex: 1 0 280px;
+    scroll-snap-align: start;
+  }
 }
 
-@media (max-width: 640px) {
-  .form-row {
-    grid-template-columns: 1fr;
-  }
+/* Tablet dọc (768px - 1023px) */
+@media (max-width: 768px) {
   .top-header {
     padding: 0 1rem;
   }
   .page-container {
-    padding: 1rem;
+    padding: 1.25rem 1rem;
+  }
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.85rem;
   }
   .search-container {
-    width: 180px;
+    width: 200px;
+  }
+}
+
+/* Điện thoại màn hình phổ biến & lớn (640px trở xuống) */
+@media (max-width: 640px) {
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  .top-header {
+    padding: 0 0.85rem;
+  }
+  .page-container {
+    padding: 1rem 0.75rem;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  .search-container {
+    width: 150px;
+  }
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .page-title {
+    font-size: 1.25rem;
+  }
+  .hidden-mobile {
+    display: none !important;
+  }
+  .btn-sm {
+    padding: 0.35rem 0.5rem;
+  }
+  .stat-card {
+    padding: 1rem;
+  }
+  .kanban-col {
+    min-width: 260px;
+    flex: 1 0 260px;
+  }
+}
+
+/* Điện thoại màn hình nhỏ (320px - 380px) */
+@media (max-width: 380px) {
+  .search-container {
+    display: none;
+  }
+  .top-header {
+    padding: 0 0.5rem;
+  }
+  .page-container {
+    padding: 0.75rem 0.5rem;
+  }
+  .stat-value {
+    font-size: 1.6rem;
+  }
+  .modal-body {
+    padding: 1rem 0.75rem;
+  }
+  .modal-header, .modal-footer {
+    padding: 0.75rem;
+  }
+}
+
+/* Điện thoại xoay ngang (Landscape, ví dụ: 844x390) */
+@media (max-height: 500px) and (orientation: landscape) {
+  .modal-box {
+    max-height: 94vh;
+  }
+  .modal-header {
+    padding: 0.6rem 1rem;
+  }
+  .modal-body {
+    padding: 0.75rem 1rem;
+    gap: 0.6rem;
+  }
+  .modal-footer {
+    padding: 0.5rem 1rem;
+  }
+  .sidebar {
+    overflow-y: auto;
+  }
+}
+
+/* Thiết bị cảm ứng: Touch targets dễ thao tác */
+@media (hover: none) and (pointer: coarse) {
+  .btn, .nav-item, .modal-close, .mobile-menu-btn, .btn-icon {
+    min-height: 40px;
+  }
+  .data-table th, .data-table td {
+    padding: 0.75rem 0.6rem;
+  }
+}
+
+/* Hỗ trợ chế độ giảm chuyển động (Accessibility: prefers-reduced-motion) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

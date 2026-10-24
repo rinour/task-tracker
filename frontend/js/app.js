@@ -137,6 +137,8 @@ async function navigateTo(viewName, filterParams = {}) {
 
   // Đóng sidebar trên mobile
   document.getElementById('sidebar').classList.remove('open');
+  const overlay = document.getElementById('sidebar-overlay');
+  if (overlay) overlay.classList.remove('active');
 
   const container = document.getElementById('view-container');
   container.innerHTML = '<div class="empty-state"><span class="material-symbols-outlined empty-state-icon" style="animation:spin 1s infinite linear">sync</span><div class="empty-state-text">Đang tải dữ liệu...</div></div>';
@@ -1411,10 +1413,28 @@ function setupEventListeners() {
     });
   });
 
-  // Mobile menu toggle
-  document.getElementById('btn-mobile-menu').addEventListener('click', () => {
-    document.getElementById('sidebar').classList.toggle('open');
-  });
+  // Mobile menu & drawer overlay
+  const sidebar = document.getElementById('sidebar');
+  const sidebarOverlay = document.getElementById('sidebar-overlay');
+  const closeSidebar = () => {
+    sidebar.classList.remove('open');
+    if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+  };
+  const toggleSidebar = () => {
+    sidebar.classList.toggle('open');
+    if (sidebarOverlay) {
+      if (sidebar.classList.contains('open')) sidebarOverlay.classList.add('active');
+      else sidebarOverlay.classList.remove('active');
+    }
+  };
+
+  const menuBtn = document.getElementById('btn-mobile-menu');
+  if (menuBtn) menuBtn.addEventListener('click', toggleSidebar);
+
+  const closeSidebarBtn = document.getElementById('btn-close-sidebar');
+  if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
+
+  if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
 
   // Global search shortcut [Ctrl + K]
   document.addEventListener('keydown', (e) => {
