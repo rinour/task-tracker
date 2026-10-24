@@ -43,7 +43,7 @@
     "code": "TC06",
     "name": "Sửa công việc",
     "expected": "HTTP 200 OK, dữ liệu cập nhật và updated_at mới",
-    "actual": "HTTP 200, progress: 30%, updated_at: 2026-10-24T08:49:02.379Z",
+    "actual": "HTTP 200, progress: 30%, updated_at: 2026-10-24T09:14:29.891Z",
     "status": "ĐẠT (PASS)",
     "passed": true
   },
@@ -51,7 +51,7 @@
     "code": "TC07",
     "name": "Cập nhật trạng thái sang Done",
     "expected": "status=done, completed_at khác rỗng, progress=100",
-    "actual": "status: done, completed_at: 2026-10-24T08:49:02.380Z, progress: 100",
+    "actual": "status: done, completed_at: 2026-10-24T09:14:29.893Z, progress: 100",
     "status": "ĐẠT (PASS)",
     "passed": true
   },

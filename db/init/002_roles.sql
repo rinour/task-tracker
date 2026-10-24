@@ -5,7 +5,7 @@
 DO $$
 BEGIN
   IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'task_app') THEN
-    CREATE ROLE task_app LOGIN PASSWORD 'TaskAppSecret2026!';
+    CREATE ROLE task_app LOGIN PASSWORD 'ChangeMeAppPassword2026!';
   END IF;
 END
 $$;

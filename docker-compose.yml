@@ -43,7 +43,7 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/health"]
       interval: 15s
       timeout: 5s
       retries: 5
@@ -65,6 +65,8 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-task_tracker}
       POSTGRES_USER: ${POSTGRES_USER:-task_owner}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-TaskOwnerPassword2026!}
+      APP_DB_USER: ${APP_DB_USER:-task_app}
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:-TaskAppSecret2026!}
     volumes:
       - pg_data:/var/lib/postgresql/data
       - ./db/init:/docker-entrypoint-initdb.d:ro
@@ -84,7 +86,7 @@ services:
     image: dpage/pgadmin4:8.12
     container_name: task_tracker_pgadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@tasktracker.local}
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@tasktracker.com}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-PgAdminSecret2026!}
     ports:
       - "127.0.0.1:5050:80"
