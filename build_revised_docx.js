@@ -2,17 +2,20 @@ const fs = require('fs');
 const path = require('path');
 const child_process = require('child_process');
 
+function xmlEscape(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 const docxXmlPath = path.join(__dirname, 'docx_unpacked', 'word', 'document.xml');
 let xml = fs.readFileSync(docxXmlPath, 'utf8');
 
 console.log('Original XML length:', xml.length);
 
-// 1. Update text before Table 2.8
-const oldIntro = 'Do chưa có kết quả thực nghiệm, cột “Kết quả thực tế” để trống (cần bổ sung) và trạng thái được ghi “Chưa kiểm thử”. Người thực hiện cập nhật bảng này sau khi chạy từng ca.';
-const newIntro = 'Hệ thống đã được kiểm thử toàn diện trên môi trường Docker thực tế bằng bộ công cụ kiểm thử tự động tests/runner.js kết hợp curl và pgAdmin. Bảng 2.8 tổng hợp kết quả thực nghiệm chi tiết cho 19 ca kiểm thử, đạt tỷ lệ thành công 100%.';
-
-// 2. Define real test results for TC01 - TC19
-const testResults = {
+// 1. Define real test results for TC01 - TC19 (with XML escaping)
+const rawTestResults = {
   'TC01': 'HTTP 200; Cấp phiên JWT (cookie HttpOnly & Bearer); Chuyển hướng vào trang tổng quan thành công.',
   'TC02': 'HTTP 401: Email hoặc mật khẩu không chính xác; Không cấp phiên; Hiển thị thông báo lỗi trên UI.',
   'TC03': 'HTTP 401: Yêu cầu đăng nhập để truy cập tài nguyên này; Chặn truy cập trái phép.',
@@ -34,21 +37,24 @@ const testResults = {
   'TC19': 'Thành công; Backend ghi log chuẩn JSON ra stdout; Grafana Alloy thu thập và đẩy vào Loki; Truy vấn LogQL chính xác.',
 };
 
-// Update Table 2.8 rows
+// 2. Update Table 2.8 rows
 const tblStart = xml.indexOf('<w:tbl', xml.indexOf('Bảng 2.8'));
 const tblEnd = xml.indexOf('</w:tbl>', tblStart) + 8;
 let tblXml = xml.substring(tblStart, tblEnd);
 
 let updatedTblXml = tblXml;
-for (const [tcCode, actualResult] of Object.entries(testResults)) {
+for (const [tcCode, actualResult] of Object.entries(rawTestResults)) {
   const rowStart = updatedTblXml.indexOf(tcCode);
   if (rowStart !== -1) {
     const rStart = updatedTblXml.lastIndexOf('<w:tr ', rowStart);
     const rEnd = updatedTblXml.indexOf('</w:tr>', rowStart) + 7;
     let rowXml = updatedTblXml.substring(rStart, rEnd);
 
+    // Escape for XML
+    const escapedResult = xmlEscape(actualResult);
+
     if (rowXml.includes('[BỔ SUNG]')) {
-      rowXml = rowXml.replace('[BỔ SUNG]', actualResult);
+      rowXml = rowXml.replace('[BỔ SUNG]', escapedResult);
     }
     if (rowXml.includes('Chưa kiểm thử')) {
       rowXml = rowXml.replace('Chưa kiểm thử', 'Đạt (PASS)');
@@ -59,7 +65,7 @@ for (const [tcCode, actualResult] of Object.entries(testResults)) {
 }
 
 xml = xml.substring(0, tblStart) + updatedTblXml + xml.substring(tblEnd);
-console.log('Updated Table 2.8 successfully!');
+console.log('Updated Table 2.8 with XML-escaped results successfully!');
 
 // 3. Update Table 3.1
 const tbl31Start = xml.indexOf('<w:tbl', xml.indexOf('Bảng 3.1'));
@@ -77,7 +83,7 @@ const replacements31 = [
 
 replacements31.forEach(([target, rep]) => {
   if (tbl31Xml.includes(target)) {
-    tbl31Xml = tbl31Xml.replace(target, rep);
+    tbl31Xml = tbl31Xml.replace(target, xmlEscape(rep));
   }
 });
 
@@ -85,8 +91,6 @@ xml = xml.substring(0, tbl31Start) + tbl31Xml + xml.substring(tbl31End);
 console.log('Updated Table 3.1 successfully!');
 
 // 4. Update Healthcheck in Docker Compose code snippet (Đoạn mã 2.2)
-// In Word XML:
-// <w:t xml:space="preserve">      test: ["CMD", "wget", "-qO-", "http://lo</w:t></w:r><w:r><w:rPr><w:rFonts w:ascii="Courier New" w:eastAsia="Courier New" w:hAnsi="Courier New" w:cs="Courier New"/><w:sz w:val="18"/><w:szCs w:val="18"/></w:rPr><w:t>calhost:3000/api/health"]</w:t>
 const splitTarget = 'http://lo</w:t></w:r><w:r><w:rPr><w:rFonts w:ascii="Courier New" w:eastAsia="Courier New" w:hAnsi="Courier New" w:cs="Courier New"/><w:sz w:val="18"/><w:szCs w:val="18"/></w:rPr><w:t>calhost:3000/api/health"]';
 const splitReplacement = 'http://127.0.0.1:3000/api/health"]</w:t></w:r><w:r><w:rPr><w:rFonts w:ascii="Courier New" w:eastAsia="Courier New" w:hAnsi="Courier New" w:cs="Courier New"/><w:sz w:val="18"/><w:szCs w:val="18"/></w:rPr><w:t>';
 
@@ -94,14 +98,9 @@ if (xml.includes(splitTarget)) {
   xml = xml.replace(splitTarget, splitReplacement);
   console.log('Updated healthcheck localhost -> 127.0.0.1 successfully!');
 } else {
-  console.log('Split target not found, trying plain replace');
   xml = xml.replace('http://localhost:3000/api/health', 'http://127.0.0.1:3000/api/health');
 }
 
 // 5. Write back modified XML
 fs.writeFileSync(docxXmlPath, xml, 'utf8');
 console.log('Saved modified document.xml with new length:', xml.length);
-
-// 6. Repackage into BAO_CAO_TASK_TRACKER_REVISED.docx
-child_process.execSync('powershell -Command "if (Test-Path BAO_CAO_TASK_TRACKER_REVISED.docx) { Remove-Item BAO_CAO_TASK_TRACKER_REVISED.docx -Force }; Compress-Archive -Path docx_unpacked\\* -DestinationPath BAO_CAO_TASK_TRACKER_REVISED.zip -Force; Move-Item BAO_CAO_TASK_TRACKER_REVISED.zip BAO_CAO_TASK_TRACKER_REVISED.docx -Force"');
-console.log('Repackaged BAO_CAO_TASK_TRACKER_REVISED.docx successfully!');
