@@ -360,3 +360,4 @@ Hệ thống **Task Tracker** đã được lập trình và triển khai hoàn 
 - Ràng buộc toàn vẹn cơ sở dữ liệu `chk_done_completed` bảo đảm dữ liệu luôn chính xác.
 - Bộ kiểm thử tự động 19/19 ca kiểm thử (TC01 - TC19) đạt tỷ lệ 100%.
 - Cấu hình hạ tầng Docker Compose, Nginx, Prometheus, Grafana, Loki và Alloy đồng bộ và chuẩn xác.
+# task-tracker
