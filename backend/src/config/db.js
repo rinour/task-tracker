@@ -23,9 +23,9 @@ const memoryStore = {
   users: [
     {
       id: 1,
-      email: 'admin@tasktracker.local',
-      // Admin@123456
-      password_hash: '$2a$10$A0G.6hFYeKYW2ejxWg3O6OP6wTpJ.1OY4WKjWhaweufYyI5wPq96e',
+      email: 'admin@gmail.com',
+      // Mk123!
+      password_hash: '$2a$10$EJaLB43l8XJ4FiYi4aa6B.U1kyyK7SIHTcXOSujSi5wZj/etthgZy',
       full_name: 'Quản trị viên Hệ thống',
       role: 'admin',
       is_active: true,
@@ -33,9 +33,9 @@ const memoryStore = {
     },
     {
       id: 2,
-      email: 'quan.nm@tasktracker.local',
-      // User@123456
-      password_hash: '$2a$10$q9XfZm2v7XQ0CwLqX1lMTuTdPmvt4SHzIoA/KyRirANxaLiIFfS66',
+      email: 'quan.nm@gmail.com',
+      // Mk123!
+      password_hash: '$2a$10$EJaLB43l8XJ4FiYi4aa6B.U1kyyK7SIHTcXOSujSi5wZj/etthgZy',
       full_name: 'Nguyễn Minh Quân',
       role: 'member',
       is_active: true,
@@ -43,9 +43,9 @@ const memoryStore = {
     },
     {
       id: 3,
-      email: 'hoang.nh@tasktracker.local',
-      // User@123456
-      password_hash: '$2a$10$q9XfZm2v7XQ0CwLqX1lMTuTdPmvt4SHzIoA/KyRirANxaLiIFfS66',
+      email: 'hoang.nh@gmail.com',
+      // Mk123!
+      password_hash: '$2a$10$EJaLB43l8XJ4FiYi4aa6B.U1kyyK7SIHTcXOSujSi5wZj/etthgZy',
       full_name: 'Nguyễn Huy Hoàng',
       role: 'member',
       is_active: true,
@@ -53,9 +53,9 @@ const memoryStore = {
     },
     {
       id: 4,
-      email: 'lan.ht@tasktracker.local',
-      // User@123456
-      password_hash: '$2a$10$q9XfZm2v7XQ0CwLqX1lMTuTdPmvt4SHzIoA/KyRirANxaLiIFfS66',
+      email: 'lan.ht@gmail.com',
+      // Mk123!
+      password_hash: '$2a$10$EJaLB43l8XJ4FiYi4aa6B.U1kyyK7SIHTcXOSujSi5wZj/etthgZy',
       full_name: 'Hoàng Thị Lan',
       role: 'member',
       is_active: true,

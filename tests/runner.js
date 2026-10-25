@@ -89,8 +89,8 @@ async function runAllTests() {
     // TC01: Đăng nhập hợp lệ
     // --------------------------------------------------------------------------
     const resTC01 = await makeRequest('POST', '/api/auth/login', {
-      email: 'admin@tasktracker.local',
-      password: 'Admin@123456',
+      email: 'admin@gmail.com',
+      password: 'Mk123!',
     });
     const tc01Passed = resTC01.statusCode === 200 && resTC01.body.token && resTC01.body.user.role === 'admin';
     if (tc01Passed) {
@@ -107,8 +107,8 @@ async function runAllTests() {
 
     // Đăng nhập tài khoản User thường (quan.nm)
     const resUserLogin = await makeRequest('POST', '/api/auth/login', {
-      email: 'quan.nm@tasktracker.local',
-      password: 'User@123456',
+      email: 'quan.nm@gmail.com',
+      password: 'Mk123!',
     });
     userToken = resUserLogin.body.token;
     userCookie = resUserLogin.headers['set-cookie'] ? resUserLogin.headers['set-cookie'][0] : '';
@@ -125,7 +125,7 @@ async function runAllTests() {
     // TC02: Đăng nhập sai mật khẩu
     // --------------------------------------------------------------------------
     const resTC02 = await makeRequest('POST', '/api/auth/login', {
-      email: 'admin@tasktracker.local',
+      email: 'admin@gmail.com',
       password: 'WrongPassword!',
     });
     const tc02Passed = resTC02.statusCode === 401 && !resTC02.body.token;

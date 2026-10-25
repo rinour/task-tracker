@@ -61,7 +61,7 @@
 
 | Mã | Tên ca kiểm thử | Kỳ vọng theo DOCX | Kết quả thực tế chạy tự động | Đánh giá |
 | :--- | :--- | :--- | :--- | :--- |
-| **TC01** | Đăng nhập hợp lệ | Đăng nhập thành công, cấp phiên, vào dashboard | HTTP 200, JWT token sinh ra, user: `admin@tasktracker.local` | **ĐẠT (PASS)** |
+| **TC01** | Đăng nhập hợp lệ | Đăng nhập thành công, cấp phiên, vào dashboard | HTTP 200, JWT token sinh ra, user: `admin@gmail.com` | **ĐẠT (PASS)** |
 | **TC02** | Đăng nhập sai mật khẩu | Từ chối (401), thông báo lỗi, không cấp phiên | HTTP 401: `Email hoặc mật khẩu không chính xác` | **ĐẠT (PASS)** |
 | **TC03** | Truy cập API khi chưa đăng nhập | Trả về 401 | HTTP 401: `Yêu cầu đăng nhập để truy cập tài nguyên này` | **ĐẠT (PASS)** |
 | **TC04** | Tạo công việc | Trả về 201; công việc hiển thị trong danh sách | HTTP 201, ID sinh tự động: 6, tiêu đề hợp lệ | **ĐẠT (PASS)** |

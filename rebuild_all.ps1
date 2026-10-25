@@ -6,6 +6,8 @@ Write-Host "=== 1. Extracting clean original document.xml from backup ==="
 $backupZip = [System.IO.Compression.ZipFile]::OpenRead('BAO_CAO_TASK_TRACKER_ORIGINAL_BACKUP.docx')
 $cleanEntry = $backupZip.GetEntry('word/document.xml')
 $destPath = 'docx_unpacked\word\document.xml'
+$destDir = [System.IO.Path]::GetDirectoryName($destPath)
+if (-not (Test-Path $destDir)) { New-Item -ItemType Directory -Path $destDir -Force | Out-Null }
 if (Test-Path $destPath) { Remove-Item $destPath -Force }
 
 $destStream = [System.IO.File]::Create($destPath)

@@ -29,7 +29,7 @@ Hệ thống Task Tracker đã được triển khai sẵn sàng và đang chạ
 - **Website cần mở**: [https://localhost](https://localhost)
 - **Các bước thực hiện**:
   1. Truy cập [https://localhost](https://localhost) (nếu chưa đăng nhập, hộp thoại đăng nhập hiện ra).
-  2. Bấm nút "🔑 Admin" để hệ thống tự điền tài khoản `admin@tasktracker.local`.
+  2. Bấm nút "🔑 Admin" để hệ thống tự điền tài khoản `admin@gmail.com` (mật khẩu `Mk123!`).
   3. Chụp lại màn hình đăng nhập (nhấn `Windows + Shift + S`).
   4. Dán vào vị trí **Hình 1.4** trong Word.
 

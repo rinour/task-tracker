@@ -1294,21 +1294,6 @@ async function handleLogout() {
   }
 }
 
-// Quick fill buttons for demo testing
-function setupDemoAccountButtons() {
-  document.getElementById('btn-fill-admin').onclick = () => {
-    document.getElementById('auth-email').value = 'admin@tasktracker.local';
-    document.getElementById('auth-password').value = 'Admin@123456';
-  };
-  document.getElementById('btn-fill-pm').onclick = () => {
-    document.getElementById('auth-email').value = 'quan.nm@tasktracker.local';
-    document.getElementById('auth-password').value = 'User@123456';
-  };
-  document.getElementById('btn-fill-tech').onclick = () => {
-    document.getElementById('auth-email').value = 'hoang.nh@tasktracker.local';
-    document.getElementById('auth-password').value = 'User@123456';
-  };
-}
 
 // ==============================================================================
 // 10. TIỆN ÍCH HỆ THỐNG (TOASTS, HELPERS, EVENT LISTENERS)
@@ -1487,4 +1472,33 @@ function setupEventListeners() {
   });
 
   setupDemoAccountButtons();
+}
+
+function setupDemoAccountButtons() {
+  const emailInput = document.getElementById('auth-email');
+  const passInput = document.getElementById('auth-password');
+
+  const btnAdmin = document.getElementById('btn-fill-admin');
+  if (btnAdmin) {
+    btnAdmin.addEventListener('click', () => {
+      if (emailInput) emailInput.value = 'admin@gmail.com';
+      if (passInput) passInput.value = 'Mk123!';
+    });
+  }
+
+  const btnPm = document.getElementById('btn-fill-pm');
+  if (btnPm) {
+    btnPm.addEventListener('click', () => {
+      if (emailInput) emailInput.value = 'quan.nm@gmail.com';
+      if (passInput) passInput.value = 'Mk123!';
+    });
+  }
+
+  const btnTech = document.getElementById('btn-fill-tech');
+  if (btnTech) {
+    btnTech.addEventListener('click', () => {
+      if (emailInput) emailInput.value = 'hoang.nh@gmail.com';
+      if (passInput) passInput.value = 'Mk123!';
+    });
+  }
 }

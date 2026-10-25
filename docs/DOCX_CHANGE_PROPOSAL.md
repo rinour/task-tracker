@@ -85,10 +85,10 @@
 - **Căn cứ từ tài liệu**: Mục 1.2.1 (FR01, FR02) và Bảng 1.6 (vai trò admin, member).
 - **Nội dung đề xuất bổ sung**:
   - Bổ sung bảng tài khoản demo chuẩn:
-    - Admin: `admin@tasktracker.local` / `Admin@123456` (Toàn quyền)
-    - Quản lý dự án (PM): `quan.nm@tasktracker.local` / `User@123456`
-    - Tech Lead: `hoang.nh@tasktracker.local` / `User@123456`
-    - Developer: `lan.ht@tasktracker.local` / `User@123456`
+    - Admin: `admin@gmail.com` / `Mk123!` (Toàn quyền)
+    - Quản lý dự án (PM): `quan.nm@gmail.com` / `Mk123!`
+    - Tech Lead: `hoang.nh@gmail.com` / `Mk123!`
+    - Developer: `lan.ht@gmail.com` / `Mk123!`
 - **Lý do & Lợi ích**: Giúp việc nghiệm thu hệ thống diễn ra thuận lợi, minh bạch và chuyên nghiệp.
 - **Tác động**: Mục 1.5.1 và phần hướng dẫn nghiệm thu.
 - **Mức độ ưu tiên**: **Trung bình**

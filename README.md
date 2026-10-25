@@ -142,10 +142,10 @@ Tất cả mật khẩu đã được băm an toàn bằng thuật toán **bcryp
 
 | Vai trò | Họ và tên | Email đăng nhập | Mật khẩu mặc định | Ghi chú |
 | :--- | :--- | :--- | :--- | :--- |
-| **Quản trị viên** | Quản trị viên Hệ thống | `admin@tasktracker.local` | `Admin@123456` | Toàn quyền xem mọi công việc, khóa/mở tài khoản |
-| **Project Manager** | Nguyễn Minh Quân | `quan.nm@tasktracker.local` | `User@123456` | Trưởng nhóm Phát triển Web & Mobile |
-| **Tech Lead** | Nguyễn Huy Hoàng | `hoang.nh@tasktracker.local` | `User@123456` | Quản lý kỹ thuật và DevOps |
-| **Frontend Dev** | Hoàng Thị Lan | `lan.ht@tasktracker.local` | `User@123456` | Thành viên lập trình giao diện |
+| **Quản trị viên** | Quản trị viên Hệ thống | `admin@gmail.com` | `Mk123!` | Toàn quyền xem mọi công việc, khóa/mở tài khoản |
+| **Project Manager** | Nguyễn Minh Quân | `quan.nm@gmail.com` | `Mk123!` | Trưởng nhóm Phát triển Web & Mobile |
+| **Tech Lead** | Nguyễn Huy Hoàng | `hoang.nh@gmail.com` | `Mk123!` | Quản lý kỹ thuật và DevOps |
+| **Frontend Dev** | Hoàng Thị Lan | `lan.ht@gmail.com` | `Mk123!` | Thành viên lập trình giao diện |
 
 > 💡 *Trên giao diện đăng nhập có sẵn các nút bấm 1-click để điền nhanh thông tin tài khoản demo.*
 
@@ -258,7 +258,7 @@ npm test
 
 | Mã TC | Chức năng kiểm thử | Dữ liệu đầu vào | Kết quả mong đợi | Kết quả thực tế | Trạng thái |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **TC01** | Đăng nhập hợp lệ | Email & mật khẩu đúng (`admin@tasktracker.local`) | Cấp phiên làm việc, HTTP 200, trả về thông tin user | `HTTP 200, user: admin@tasktracker.local` | **ĐẠT (PASS)** |
+| **TC01** | Đăng nhập hợp lệ | Email & mật khẩu đúng (`admin@gmail.com`) | Cấp phiên làm việc, HTTP 200, trả về thông tin user | `HTTP 200, user: admin@gmail.com` | **ĐẠT (PASS)** |
 | **TC02** | Đăng nhập sai mật khẩu | Mật khẩu sai | Từ chối cấp phiên, HTTP 401 | `HTTP 401: Email hoặc mật khẩu không chính xác` | **ĐẠT (PASS)** |
 | **TC03** | Truy cập API chưa đăng nhập | `GET /api/tasks` không kèm token | Trả về HTTP 401 Unauthorized | `HTTP 401: Yêu cầu đăng nhập` | **ĐẠT (PASS)** |
 | **TC04** | Tạo công việc | Tiêu đề, deadline, ưu tiên, phân công hợp lệ | Trả về HTTP 201 Created, tạo thành công trong DB | `HTTP 201, ID: 6` | **ĐẠT (PASS)** |
